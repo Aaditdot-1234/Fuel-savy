@@ -1,10 +1,11 @@
 'use client'
-
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'   
-import milestone from '../public/milestone.svg'   
-import tyre from '../public/tyre.png'
+import { signOut, useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import Image from 'next/image';
+import { Inter } from 'next/font/google';
+import styles from './page.module.css';   
+import milestone from '../public/milestone.svg';   
+import tyre from '../public/tyre.png';
 import { useEffect, useRef, useState} from 'react'; 
 import { useInView } from 'react-intersection-observer';  
 
@@ -13,6 +14,12 @@ import { useInView } from 'react-intersection-observer';
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {  
+  const session = useSession({
+    required: true,
+    onUnauthenticated() {
+      redirect('/signin');
+    },
+  });
   const [containerVisible, setContainerVisible] = useState(true);
   const [ref, inView] = useInView();
   const div2Ref = useRef<HTMLDivElement>(null);
@@ -136,14 +143,12 @@ export default function Home() {
                 <button>Submit</button>
             </div>
         </div>
-        <div className={styles.connections_upper}> 
-            <div><p>Home</p></div>
-            <div><p>Services</p></div>
-            <div><p>Projects</p></div>
-            <div><p>Contact</p></div>
-            <button>Call Now</button>
+        <div className={styles.connections_upper}>   {/*delete this */}
+        <div className='text-white'>{session?.data?.user?.email }</div>
+      <button className='text-white' onClick={() => signOut()}>Logout</button>
         </div>
       </div>
     </main>
   );
 }
+Home.requireAuth = true;
