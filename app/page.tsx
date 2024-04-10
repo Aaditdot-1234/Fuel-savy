@@ -14,12 +14,7 @@ import { useInView } from 'react-intersection-observer';
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {  
-  const session = useSession({
-    required: true,
-    onUnauthenticated() {
-      redirect('/signin');
-    },
-  });
+  const { data: session } = useSession();
   const [containerVisible, setContainerVisible] = useState(true);
   const [ref, inView] = useInView();
   const div2Ref = useRef<HTMLDivElement>(null);
@@ -144,11 +139,10 @@ export default function Home() {
             </div>
         </div>
         <div className={styles.connections_upper}>   {/*delete this */}
-        <div className='text-white'>{session?.data?.user?.email }</div>
+        <div className='text-white'>{session?.user?.email }</div>
       <button className='text-white' onClick={() => signOut()}>Logout</button>
         </div>
       </div>
     </main>
   );
 }
-Home.requireAuth = true;
